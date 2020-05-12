@@ -18,7 +18,7 @@ module.exports = {
     }
 
     try {
-      const existingUser = await User.findeOne({ email });
+      const existingUser = await User.findOne({ email });
       if(existingUser) { 
         return res.status(401).json({ error: 'User email already exists!' });
       }

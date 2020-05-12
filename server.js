@@ -9,10 +9,13 @@ const app = express();
 // when in production, use heroku port
 const PORT = process.env.PORT || 3001;
 
+// middlewares
 // grabs inputs from form 
 app.use(express.urlencoded({ extended: true }));
 // grabs input and puts it in req.body
 app.use(express.json());
+
+app.use(routes);
 
 // connect mongo database
 // if db doesn't exist, mongo auto makes and uses db
