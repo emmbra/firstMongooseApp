@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // connect mongo database
-mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/redux_todo_db')
-
+// if db doesn't exist, mongo auto makes and uses db
+// mongoose calls MongoClient.connect under the hood for useNewUrlParser
+mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/redux_todo_db', { useNewUrlParser: true, useUnifiedTopology: true });
 app.listen(PORT);
