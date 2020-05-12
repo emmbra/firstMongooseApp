@@ -4,19 +4,15 @@ const { User } = require('./../models');
 module.exports = {
   signUp: async (req, res) => {
     const { email, password } = req.body;
-
     if(!email || !password) {
       return res.status(400).json({ error: 'You must provide both email and password!' })
     }
-
     if(!isEmail(email)) {
       return res.status(400).json({ error: 'You must provide a valid email address!' })
     }
-
     if(!isLength(password, { min: 6 })) {
       return res.status(400).json({ error: 'Your password must be at least 6 characters long!' })
     }
-
     try {
       const existingUser = await User.findOne({ email });
       if(existingUser) { 
