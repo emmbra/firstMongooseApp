@@ -1,5 +1,17 @@
 const { isEmail, isLength } = require('validator');
+const jwt = require('jwt-simple'); // library to create token for user
 const { User } = require('./../models');
+const { secret } = require('./../config');
+
+
+function tokenForUser(user) {
+  const timeStamp = new Date().getTime();
+  // jwt.encode takes 2 params
+  // 1 is what you want token to look like and values for each field
+  // 2 is the secret you want to use to encode the token
+  // sub: who does this token belong to
+  return jwt.encode({ sub: user._id, iat: timeStamp }, secret);
+}
 
 module.exports = {
   signUp: async (req, res) => {
@@ -18,8 +30,10 @@ module.exports = {
       if(existingUser) { 
         return res.status(401).json({ error: 'User email already exists!' });
       }
+      // user signs up and logs in, info saved to db
       const user = await new User({ email, password }).save();
-      return res.status(200).json(user);
+      // return a token to user based on userId and timeStamp
+      return res.status(200).json({ token: tokenForUser(user) });
     } catch (error) {
       return res.status(403).json(error);
     }
