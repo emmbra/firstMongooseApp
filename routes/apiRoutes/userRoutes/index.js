@@ -7,10 +7,10 @@ const { requireAuth } = require('./../../../middlewares/authMiddlewares');
 
 // /api/user/todos
 router.route('/todos')
-  .post(addTodo)
+  .post(requireAuth, addTodo);
 
 // /api/user/emails
-router.get('/emails', requireAuth, getAllUserEmails);
+router.get('/emails', getAllUserEmails);
 
 
 module.exports = router;

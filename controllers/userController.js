@@ -4,17 +4,18 @@ const { Todo, User } = require('./../models');
 
 module.exports = { 
   addTodo: async (req, res) => {
-    const { text, userId } = req.body;
+    // console.log("I am the logged in user", req.user)
+    const { text } = req.body;
     if(!text) {
       return res.status(400).json({ error: 'You must provide text for the todo!'});
     }
     try {
       // save the todo text and id to Todo collection
-      const newTodo = await new Todo({ text, user: userId }).save();
-      const user = await User.findById(userId);
-      user.todos.push(newTodo);
+      const newTodo = await new Todo({ text, user: req.user._id }).save();
+      req.user.todos.push(newTodo);
       // save the todo id to User collection
-      await user.save();
+      await req.user.save();
+      console.log("Saved", req.user)
       return res.status(200).json(newTodo);
     } catch (error) {
       return res.status(403).json(error);
@@ -22,6 +23,8 @@ module.exports = {
   },
 
   getAllUserEmails: async (req, res) => {
+    // console.log(req.user); // should be same user passed to done on passport.js
+    // req.user only exists because of requireAuth middleware on user route
     try {
       // {} means find everything
       // 2nd parameter denotes what you want to see: 'email'
