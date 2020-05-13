@@ -37,5 +37,7 @@ module.exports = {
     } catch (error) {
       return res.status(403).json(error);
     }
-  }
+  },
+  signIn: (req, res) => res.status(200).json({ token: tokenForUser(req.user) })
+
 };

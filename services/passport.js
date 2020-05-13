@@ -1,6 +1,6 @@
 const passport = require("passport");
 const { Strategy: JwtStrategy, ExtractJwt } = require("passport-jwt");
-
+const LocalStrategy = require('passport-local');
 const { User } = require('./../models');
 const { secret } = require("./../config");
 
@@ -28,9 +28,37 @@ const jwtLogin = new JwtStrategy(jwtOptions, async (payload, done) => {
   }
 });
 
-// Let's passport know that we have declared a jwt strategy
+// By default, LocalStrategy is looking for a username
+// However, we are not using username -- we are using email
+// So here I am saying, "Hey, if you're looking for username
+// look for email property from the request instead (req.body.email)"
+const localOptions = { usernameField: 'email' };
+
+const localLogin = new LocalStrategy(localOptions, async (email, password, done) => {
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return done(null, false);
+    }
+    // this is an instance of user
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return done(null, false);
+    }
+    return done(null, user);
+  } catch (error) {
+    return done(error, false);
+  }
+});
+
+// Lets passport know that we have declared a jwt strategy
 // if we call passport.authenticate('jwt'), passport will refer
 // to this jwtLogin strategy that we defined
-passport.use(jwtLogin)
+passport.use(jwtLogin);
 
+
+// lets passport know that we have declared a local strategy
+// if we call passport.authenticate('local'), passport will refer
+// to this localLogin strategy that we defined
+passport.use(localLogin);
 
