@@ -19,6 +19,20 @@ module.exports = {
     } catch (error) {
       return res.status(403).json(error);
     }
-  }
+  },
+
+  getAllUserEmails: async (req, res) => {
+    try {
+      // {} means find everything
+      // 2nd parameter denotes what you want to see: 'email'
+      const users = await User.find({}, 'email');
+      if (!users) {
+        return res.status(404).json({ error: 'No user found' });
+      }
+      return res.status(200).json(users);
+    } catch (error) {
+      return res.status(403).json(error);
+    }
+  },
 
 };
