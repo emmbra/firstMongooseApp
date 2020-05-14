@@ -38,4 +38,17 @@ module.exports = {
     }
   },
 
+  getUserTodos: async (req, res) => {
+    console.log(req.user);
+    try {
+      // method #1, query User collection
+      // const user = await User.findById(req.user._id).populate('todos');
+      // return res.status(200).json(user.todos);
+      // method #2, query Todo collection
+      const todos = await Todo.find({ user: req.user._id });
+      return res.status(200).json(todos);
+    } catch (error) {
+      return res.status(403).json(error);
+    }
+  }
 };
