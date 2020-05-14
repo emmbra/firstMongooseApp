@@ -50,5 +50,28 @@ module.exports = {
     } catch (error) {
       return res.status(403).json(error);
     }
+  },
+
+  deleteUserTodoById: async (req, res) => {
+    // id will come from req.params
+    const { todoId } = req.params;
+    // protected route (requireAuth middleware) so it will have req.user because of passport.js
+    // otherwise req.user will remain undefined
+    console.log(req.user)
+    // req.user gives us the id of the logged in user
+    try {
+      const todoToDelete = await Todo.findById(todoId);
+      if (!todoToDelete) {
+        return res.status(401).json({ error: 'No todo with that id!' })
+      }
+      // this check is to see if the todo belongs to the logged in user
+      if (req.user._id.toString() !== todoToDelete.user.toString()) {
+        return res.status(401).json({ error: 'You cannot delete a todo that is not yours!' });
+      }
+      const deletedTodo = await Todo.findByIdAndDelete(todoId);
+      return res.status(200).json(deletedTodo);
+    } catch (error) {
+      return res.status(403).json(error);
+    }
   }
 };
