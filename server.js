@@ -22,5 +22,5 @@ require('./services/passport');
 // connect mongo database
 // if db doesn't exist, mongo auto makes and uses db
 // mongoose calls MongoClient.connect under the hood for useNewUrlParser
-mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/redux_todo_db', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/redux_todo_db', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false });
 app.listen(PORT);
